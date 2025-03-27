@@ -22,6 +22,28 @@ class Server:
         #Inits a list of clients to broadcast messages to.
         self.client_list = []
 
+        """
+        Main Loop
+        """
+        while True: 
+ 
+            """Accepts a connection request and stores two parameters, 
+            conn which is a socket object for that user, and addr 
+            which contains the IP address of the client that just 
+            connected"""
+            conn, addr = self.server.accept() 
+        
+            """Maintains a list of clients for ease of broadcasting 
+            a message to all available people in the chatroom"""
+            self.client_list.append(conn) 
+        
+            # prints the address of the user that just connected 
+            print (addr[0] + " connected")
+        
+            # creates and individual thread for every user 
+            # that connects 
+            self.start_new_thread(self.clientthread,(conn,addr))    
+
     def clientthread(self, conn, addr):
             
         # sends a message to the client whose user object is conn 
@@ -49,7 +71,18 @@ class Server:
                 except: 
                     continue
 
-    def broadcast():
-         pass
+    def broadcast(self, message, connection):
+            for self.clients in self.client_list:
+               if self.clients != connection:
+                    try: 
+                       self.clients.send(message)
+                    except:
+                        self.clients.close()
+                        remove(self.clients)
+
+    def remove(self, connection):
+         if connection in self.client_list:
+              self.client_list.remove(connection)
+
 
         
